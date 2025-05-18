@@ -11,6 +11,8 @@ error WorkflowNotEnded();
 error VoterAddressNotAllowed();
 error HasAlreadyVoted();
 error InvalidProposalID();
+error InvalidPastVoteID();
+
 
 /**
  * @title Voting System
@@ -20,6 +22,8 @@ contract Voting is Ownable {
     event WorkflowStatusChange(WorkflowStatus previousStatus, WorkflowStatus newStatus);
     event ProposalRegistered(uint proposalId);
     event Voted (address voter, uint proposalId);
+    event VotesTallied(uint maxVotes, uint winningProposalsCount);
+    event VotingReset(uint indexed roundIndex, uint totalVotes, uint winningProposalsCount);
     
     struct Voter { 
         bool isRegistered; 
@@ -43,16 +47,23 @@ contract Voting is Ownable {
 
     struct VotingState {
         mapping(address=> Voter) voters;
+        uint totalVotesCount;
         Proposal[] proposals;
         WorkflowStatus status;
         Proposal[] winningProposals;
     }
 
-    VotingState currentVoting;
-    VotingState[] pastVote;
+    struct VotingSummary {
+        uint totalVotesCount;
+        Proposal[] proposals;
+        Proposal[] winningProposals;
+    }
+
+    VotingState currentVote;
+    VotingSummary[] pastVotes;
 
     constructor() Ownable(msg.sender) {
-        currentVoting.status = WorkflowStatus.RegisteringVoters;
+        currentVote.status = WorkflowStatus.RegisteringVoters;
     }
 
     /**
@@ -60,7 +71,7 @@ contract Voting is Ownable {
     */
     modifier allowedVoter() {
         require(
-            currentVoting.voters[msg.sender].isRegistered, 
+            currentVote.voters[msg.sender].isRegistered, 
             VoterAddressNotAllowed()
         );
         _;
@@ -72,15 +83,15 @@ contract Voting is Ownable {
     */
     function registerVoter(address _address) external onlyOwner {
         require(
-            currentVoting.status == WorkflowStatus.RegisteringVoters, 
-            InvalidWorkflowStatus(currentVoting.status, WorkflowStatus.RegisteringVoters)
+            currentVote.status == WorkflowStatus.RegisteringVoters, 
+            InvalidWorkflowStatus(currentVote.status, WorkflowStatus.RegisteringVoters)
         );
         require(
-            !currentVoting.voters[_address].isRegistered,
+            !currentVote.voters[_address].isRegistered,
             VoterAlreadyRegistered()
         );
 
-        currentVoting.voters[_address].isRegistered = true;
+        currentVote.voters[_address].isRegistered = true;
         emit VoterRegistered(_address);
     }
 
@@ -90,12 +101,64 @@ contract Voting is Ownable {
     */
     function nextWorkflowStatus() external onlyOwner {
         require(
-            uint(currentVoting.status) < uint(type(WorkflowStatus).max), 
+            uint(currentVote.status) < (uint(type(WorkflowStatus).max) - 1) , 
             WorkflowAlreadyEnded()
         );
-        WorkflowStatus previousStatus = currentVoting.status;
-        currentVoting.status = WorkflowStatus(uint(currentVoting.status) + 1);
-        emit WorkflowStatusChange(previousStatus, currentVoting.status);
+        WorkflowStatus previousStatus = currentVote.status;
+        currentVote.status = WorkflowStatus(uint(currentVote.status) + 1);
+        emit WorkflowStatusChange(previousStatus, currentVote.status);
+
+        if (currentVote.status == WorkflowStatus.VotesTallied) {
+            tallyVotes();
+        }
+    }
+
+    /**
+    * This internal function is to end the voting workflow and tallies votes
+    * Only available to the contract owner
+    */
+    function tallyVotes() internal onlyOwner {
+        uint maxVotes = 0;
+        delete currentVote.winningProposals;
+
+        for (uint i = 0; i < currentVote.proposals.length; ++i) {
+            uint votesCount = currentVote.proposals[i].voteCount;
+
+            if(votesCount > maxVotes){
+                maxVotes = votesCount;
+                delete currentVote.winningProposals;
+                currentVote.winningProposals.push(currentVote.proposals[i]);
+            } else if (votesCount == maxVotes && maxVotes != 0){
+                currentVote.winningProposals.push(currentVote.proposals[i]);
+            }
+        }
+
+        emit VotesTallied(maxVotes, currentVote.winningProposals.length);
+    }
+
+    function resetVotingState() external onlyOwner {
+        require(
+            currentVote.status == WorkflowStatus.VotesTallied ,
+            InvalidWorkflowStatus(currentVote.status, WorkflowStatus.VotesTallied)
+        );
+
+        pastVotes.push(); // Allocate a new empty slot
+        VotingSummary storage summary = pastVotes[pastVotes.length - 1];
+
+        summary.totalVotesCount = currentVote.totalVotesCount;
+
+        for (uint i = 0; i < currentVote.proposals.length; i++) {
+            summary.proposals.push(currentVote.proposals[i]);
+        }
+
+        for (uint i = 0; i < currentVote.winningProposals.length; i++) {
+            summary.winningProposals.push(currentVote.winningProposals[i]);
+        }
+
+        delete currentVote;
+        currentVote.status = WorkflowStatus.RegisteringVoters;
+
+        emit VotingReset(pastVotes.length - 1, summary.totalVotesCount, summary.winningProposals.length);
     }
 
     /**
@@ -104,13 +167,12 @@ contract Voting is Ownable {
     */
     function registerProposal(string memory _description) external allowedVoter {
         require(
-            currentVoting.status == WorkflowStatus.ProposalsRegistrationStarted,
-            InvalidWorkflowStatus(currentVoting.status, WorkflowStatus.ProposalsRegistrationStarted)
+            currentVote.status == WorkflowStatus.ProposalsRegistrationStarted,
+            InvalidWorkflowStatus(currentVote.status, WorkflowStatus.ProposalsRegistrationStarted)
         );
             
-        currentVoting.proposals.push(
-            Proposal({description: _description, voteCount: 0})
-        );
+        currentVote.proposals.push(Proposal(_description, 0));
+        emit ProposalRegistered(currentVote.proposals.length - 1);
     }
 
     /**
@@ -119,23 +181,40 @@ contract Voting is Ownable {
     */
     function vote(uint256 _proposalId) external allowedVoter {
         require(
-            currentVoting.status == WorkflowStatus.VotingSessionStarted,
-            InvalidWorkflowStatus(currentVoting.status, WorkflowStatus.VotingSessionStarted)
+            currentVote.status == WorkflowStatus.VotingSessionStarted,
+            InvalidWorkflowStatus(currentVote.status, WorkflowStatus.VotingSessionStarted)
         );
         require(
-            !currentVoting.voters[msg.sender].hasVoted,
+            !currentVote.voters[msg.sender].hasVoted,
             HasAlreadyVoted()
         );
         require(
-            _proposalId < currentVoting.proposals.length, 
+            _proposalId < currentVote.proposals.length, 
             InvalidProposalID()
         );
 
-        currentVoting.proposals[_proposalId].voteCount += 1;
-        currentVoting.voters[msg.sender].votedProposalId = _proposalId;
-        currentVoting.voters[msg.sender].hasVoted = true;
+        currentVote.proposals[_proposalId].voteCount += 1;
+        currentVote.voters[msg.sender].votedProposalId = _proposalId;
+        currentVote.voters[msg.sender].hasVoted = true;
+        currentVote.totalVotesCount += 1;
         emit Voted(msg.sender, _proposalId);
     }
 
-    
-} 
+    /**
+    * This function is to access the vote results
+    * Only available to registered voters
+    */
+    function getVoteResults() external view allowedVoter returns (Proposal[] memory winningProposals) {
+        require(
+            currentVote.status == WorkflowStatus.VotesTallied,
+            InvalidWorkflowStatus(currentVote.status, WorkflowStatus.VotesTallied)
+        );
+        return currentVote.winningProposals;
+    } 
+
+
+    function getPastVote(uint index) external view returns (VotingSummary memory) {
+        require(index < pastVotes.length, InvalidPastVoteID());
+        return pastVotes[index];
+    }
+}

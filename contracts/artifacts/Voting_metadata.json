@@ -17,6 +17,11 @@
 			},
 			{
 				"inputs": [],
+				"name": "InvalidPastVoteID",
+				"type": "error"
+			},
+			{
+				"inputs": [],
 				"name": "InvalidProposalID",
 				"type": "error"
 			},
@@ -142,6 +147,50 @@
 				"inputs": [
 					{
 						"indexed": false,
+						"internalType": "uint256",
+						"name": "maxVotes",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "winningProposalsCount",
+						"type": "uint256"
+					}
+				],
+				"name": "VotesTallied",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "roundIndex",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "totalVotes",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "winningProposalsCount",
+						"type": "uint256"
+					}
+				],
+				"name": "VotingReset",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
 						"internalType": "enum Voting.WorkflowStatus",
 						"name": "previousStatus",
 						"type": "uint8"
@@ -155,6 +204,91 @@
 				],
 				"name": "WorkflowStatusChange",
 				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "index",
+						"type": "uint256"
+					}
+				],
+				"name": "getPastVote",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "totalVotesCount",
+								"type": "uint256"
+							},
+							{
+								"components": [
+									{
+										"internalType": "string",
+										"name": "description",
+										"type": "string"
+									},
+									{
+										"internalType": "uint256",
+										"name": "voteCount",
+										"type": "uint256"
+									}
+								],
+								"internalType": "struct Voting.Proposal[]",
+								"name": "proposals",
+								"type": "tuple[]"
+							},
+							{
+								"components": [
+									{
+										"internalType": "string",
+										"name": "description",
+										"type": "string"
+									},
+									{
+										"internalType": "uint256",
+										"name": "voteCount",
+										"type": "uint256"
+									}
+								],
+								"internalType": "struct Voting.Proposal[]",
+								"name": "winningProposals",
+								"type": "tuple[]"
+							}
+						],
+						"internalType": "struct Voting.VotingSummary",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getVoteResults",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "string",
+								"name": "description",
+								"type": "string"
+							},
+							{
+								"internalType": "uint256",
+								"name": "voteCount",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct Voting.Proposal[]",
+						"name": "winningProposals",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
 			},
 			{
 				"inputs": [],
@@ -205,6 +339,13 @@
 			{
 				"inputs": [],
 				"name": "renounceOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "resetVotingState",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -267,6 +408,9 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {
+				"getVoteResults()": {
+					"notice": "This function is to access the vote results Only available to registered voters"
+				},
 				"nextWorkflowStatus()": {
 					"notice": "This function is for updating the status of the voting workflow Only available to the contract owner"
 				},
@@ -316,11 +460,11 @@
 			]
 		},
 		"contracts/Voting.sol": {
-			"keccak256": "0x142e504a719ab1ff4f1754258da08a143d8a7434653b05541a6ca4ffcfef0c3d",
+			"keccak256": "0x6aab7fa196ec4b7b37da83e1bbca4c18034278ef90d29969059d0e208a557389",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://414af234b2e3cdf6bb98f10340d468e83e081b74bde98cff1ee348f95bcf90a2",
-				"dweb:/ipfs/QmXQrKdv3xXD44zbaQynWT7iaJLKGUwo8gnWmxFQLAG7Cb"
+				"bzz-raw://3c80825e8dca20ec49d7ab3704ee9c0000d60efb7143711a634c7a3c187f9051",
+				"dweb:/ipfs/Qme3tRpX5YqWsCnsV3E41z8dt4cak4daDGW4yEY9vtQKhg"
 			]
 		}
 	},
