@@ -1,0 +1,47 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"details": "Set & change owner",
+			"kind": "dev",
+			"methods": {},
+			"title": "Owner",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/Voting.sol": "Voting"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/Voting.sol": {
+			"keccak256": "0x1a1b793c4c6c9f38edcd6a728bacf9592776896fea74abbaeff65f0f1efb18e7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b418ddb90112d3319af69921f43986abe320f7d09870d2f2de1faba3c3db3a8f",
+				"dweb:/ipfs/QmazsqVbEUjTDhbrp7sfRwf1E4y9oSgvj5fAkxe3gzcZ1f"
+			]
+		}
+	},
+	"version": 1
+}
