@@ -6,10 +6,9 @@
 	"output": {
 		"abi": [],
 		"devdoc": {
-			"details": "Set & change owner",
 			"kind": "dev",
 			"methods": {},
-			"title": "Owner",
+			"title": "Voting System",
 			"version": 1
 		},
 		"userdoc": {
@@ -35,11 +34,11 @@
 	},
 	"sources": {
 		"contracts/Voting.sol": {
-			"keccak256": "0x1a1b793c4c6c9f38edcd6a728bacf9592776896fea74abbaeff65f0f1efb18e7",
+			"keccak256": "0x7390aacbc02d238e5d4b1ed0027d44f5be83b49952e00ff460d523958230047a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b418ddb90112d3319af69921f43986abe320f7d09870d2f2de1faba3c3db3a8f",
-				"dweb:/ipfs/QmazsqVbEUjTDhbrp7sfRwf1E4y9oSgvj5fAkxe3gzcZ1f"
+				"bzz-raw://6f5a83afee4d4d4494962d517ba7d49af24c946928c35379418bf50a590e1f6e",
+				"dweb:/ipfs/Qme1AgMYtSWYTWa68vpGiZ2j5uQMp9q5ETR7HfucEBBitu"
 			]
 		}
 	},

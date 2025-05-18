@@ -3,8 +3,7 @@
 pragma solidity 0.8.30;
 
 /**
- * @title Owner
- * @dev Set & change owner
+ * @title Voting System
  */
 contract Voting {
 
