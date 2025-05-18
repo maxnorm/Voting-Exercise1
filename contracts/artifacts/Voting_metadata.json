@@ -11,6 +11,32 @@
 				"type": "constructor"
 			},
 			{
+				"inputs": [],
+				"name": "HasAlreadyVoted",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InvalidProposalID",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "enum Voting.WorkflowStatus",
+						"name": "current",
+						"type": "uint8"
+					},
+					{
+						"internalType": "enum Voting.WorkflowStatus",
+						"name": "expected",
+						"type": "uint8"
+					}
+				],
+				"name": "InvalidWorkflowStatus",
+				"type": "error"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -30,6 +56,21 @@
 					}
 				],
 				"name": "OwnableUnauthorizedAccount",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "VoterAddressNotAllowed",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "VoterAlreadyRegistered",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "WorkflowAlreadyEnded",
 				"type": "error"
 			},
 			{
@@ -117,6 +158,13 @@
 			},
 			{
 				"inputs": [],
+				"name": "nextWorkflowStatus",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "owner",
 				"outputs": [
 					{
@@ -126,6 +174,19 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_description",
+						"type": "string"
+					}
+				],
+				"name": "registerProposal",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -157,6 +218,19 @@
 					}
 				],
 				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_proposalId",
+						"type": "uint256"
+					}
+				],
+				"name": "vote",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -192,7 +266,20 @@
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {},
+			"methods": {
+				"nextWorkflowStatus()": {
+					"notice": "This function is for updating the status of the voting workflow Only available to the contract owner"
+				},
+				"registerProposal(string)": {
+					"notice": "This function is to add voting proposal for the upcoming vote Only available to registered voters"
+				},
+				"registerVoter(address)": {
+					"notice": "This function is for registering voter  Only available to the contract owner"
+				},
+				"vote(uint256)": {
+					"notice": "This function is to vote for a proposal Only available to registered voters"
+				}
+			},
 			"version": 1
 		}
 	},
@@ -229,11 +316,11 @@
 			]
 		},
 		"contracts/Voting.sol": {
-			"keccak256": "0x332fcb48b6880bfcefe4601e201fdccccab5610cea8e0b5b590571d10faf005e",
+			"keccak256": "0x142e504a719ab1ff4f1754258da08a143d8a7434653b05541a6ca4ffcfef0c3d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://7967849c6a9dd3124916a12602dfde4b4991ed84b78f6154448e37335e39490d",
-				"dweb:/ipfs/QmQxpun5dJnbWMpxByp7hGKk8pkbgaa2oRc16VL2Zk5Xe4"
+				"bzz-raw://414af234b2e3cdf6bb98f10340d468e83e081b74bde98cff1ee348f95bcf90a2",
+				"dweb:/ipfs/QmXQrKdv3xXD44zbaQynWT7iaJLKGUwo8gnWmxFQLAG7Cb"
 			]
 		}
 	},
