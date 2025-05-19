@@ -420,6 +420,9 @@
 				"registerVoter(address)": {
 					"notice": "This function is for registering voter  Only available to the contract owner"
 				},
+				"resetVotingState()": {
+					"notice": "This function is to reset the vote state and begin a new voting session Only available to the contract owner"
+				},
 				"vote(uint256)": {
 					"notice": "This function is to vote for a proposal Only available to registered voters"
 				}
@@ -460,11 +463,11 @@
 			]
 		},
 		"contracts/Voting.sol": {
-			"keccak256": "0xc3207d4f81cc78c09c28538c136228e14150ae6711183fe6599b03bb0c5143eb",
+			"keccak256": "0x7af52c76533dd2724f7aa2fef63494cb2a0909054f80b86c094dc93b9aa58532",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://86913c3e400a668ea5cbee986ef9c0214bc7bbb46a7404dde8c87a889892cf73",
-				"dweb:/ipfs/QmRkgN1ZiPRYWMu9Hw48tGq33PW2w4m9qpYqSyFM3LUVQi"
+				"bzz-raw://5d4a1b292730094aa4b7177a7dcba567fd7dbab7dd84853ffc27c27247ef1635",
+				"dweb:/ipfs/QmQdmuwWddwBrUwm2F5MnnSFjUmktse9XMLqvHuFJ98hWQ"
 			]
 		}
 	},

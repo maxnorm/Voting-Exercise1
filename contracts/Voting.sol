@@ -59,8 +59,8 @@ contract Voting is Ownable {
         Proposal[] winningProposals;
     }
 
-    VotingState currentVote;
-    VotingSummary[] pastVotes;
+    VotingState private currentVote;
+    VotingSummary[] private pastVotes;
 
     constructor() Ownable(msg.sender) {
         currentVote.status = WorkflowStatus.RegisteringVoters;
@@ -136,6 +136,10 @@ contract Voting is Ownable {
         emit VotesTallied(maxVotes, currentVote.winningProposals.length);
     }
 
+    /**
+    * This function is to reset the vote state and begin a new voting session
+    * Only available to the contract owner
+    */
     function resetVotingState() external onlyOwner {
         require(
             currentVote.status == WorkflowStatus.VotesTallied ,
