@@ -101,7 +101,7 @@ contract Voting is Ownable {
     */
     function nextWorkflowStatus() external onlyOwner {
         require(
-            uint(currentVote.status) < (uint(type(WorkflowStatus).max) - 1) , 
+            uint(currentVote.status) < (uint(type(WorkflowStatus).max)) , 
             WorkflowAlreadyEnded()
         );
         WorkflowStatus previousStatus = currentVote.status;
@@ -210,7 +210,7 @@ contract Voting is Ownable {
             InvalidWorkflowStatus(currentVote.status, WorkflowStatus.VotesTallied)
         );
         return currentVote.winningProposals;
-    } 
+    }
 
 
     function getPastVote(uint index) external view returns (VotingSummary memory) {
