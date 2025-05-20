@@ -240,21 +240,9 @@
 								"type": "tuple[]"
 							},
 							{
-								"components": [
-									{
-										"internalType": "string",
-										"name": "description",
-										"type": "string"
-									},
-									{
-										"internalType": "uint256",
-										"name": "voteCount",
-										"type": "uint256"
-									}
-								],
-								"internalType": "struct Voting.Proposal[]",
+								"internalType": "uint256[]",
 								"name": "winningProposals",
-								"type": "tuple[]"
+								"type": "uint256[]"
 							}
 						],
 						"internalType": "struct Voting.VotingSummary",
@@ -266,25 +254,26 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_proposalId",
+						"type": "uint256"
+					}
+				],
+				"name": "getProposal",
+				"outputs": [],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "getVoteResults",
 				"outputs": [
 					{
-						"components": [
-							{
-								"internalType": "string",
-								"name": "description",
-								"type": "string"
-							},
-							{
-								"internalType": "uint256",
-								"name": "voteCount",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct Voting.Proposal[]",
+						"internalType": "uint256[]",
 						"name": "winningProposals",
-						"type": "tuple[]"
+						"type": "uint256[]"
 					}
 				],
 				"stateMutability": "view",
@@ -408,6 +397,9 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {
+				"getPastVote(uint256)": {
+					"notice": "This function is to get past voting sessions"
+				},
 				"getVoteResults()": {
 					"notice": "This function is to access the vote results Only available to registered voters"
 				},
@@ -463,11 +455,11 @@
 			]
 		},
 		"contracts/Voting.sol": {
-			"keccak256": "0x7af52c76533dd2724f7aa2fef63494cb2a0909054f80b86c094dc93b9aa58532",
+			"keccak256": "0x0129125084d255d107b6236939ec766e672329c0556493eed97da99ffa259024",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://5d4a1b292730094aa4b7177a7dcba567fd7dbab7dd84853ffc27c27247ef1635",
-				"dweb:/ipfs/QmQdmuwWddwBrUwm2F5MnnSFjUmktse9XMLqvHuFJ98hWQ"
+				"bzz-raw://7d42b91a55d526c083587515d39e64b4b40c075bc3cfc70f8b1ff5ee86d755fd",
+				"dweb:/ipfs/QmeaLoaqYkcGmL8R7qKtBbRRS4hDqHSH3cGVAsdMtNYF8o"
 			]
 		}
 	},

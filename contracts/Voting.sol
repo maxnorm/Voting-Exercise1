@@ -13,7 +13,6 @@ error HasAlreadyVoted();
 error InvalidProposalID();
 error InvalidPastVoteID();
 
-
 /**
  * @title Voting System
  */
@@ -42,7 +41,7 @@ contract Voting is Ownable {
         ProposalsRegistrationEnded, 
         VotingSessionStarted, 
         VotingSessionEnded, 
-        VotesTallied 
+        VotesTallied
     }
 
     struct VotingState {
@@ -50,13 +49,13 @@ contract Voting is Ownable {
         uint totalVotesCount;
         Proposal[] proposals;
         WorkflowStatus status;
-        Proposal[] winningProposals;
+        uint[] winningProposals;
     }
 
     struct VotingSummary {
         uint totalVotesCount;
         Proposal[] proposals;
-        Proposal[] winningProposals;
+        uint[] winningProposals;
     }
 
     VotingState private currentVote;
@@ -101,7 +100,7 @@ contract Voting is Ownable {
     */
     function nextWorkflowStatus() external onlyOwner {
         require(
-            uint(currentVote.status) < (uint(type(WorkflowStatus).max)) , 
+            uint(currentVote.status) < (uint(type(WorkflowStatus).max)), 
             WorkflowAlreadyEnded()
         );
         WorkflowStatus previousStatus = currentVote.status;
@@ -127,9 +126,9 @@ contract Voting is Ownable {
             if(votesCount > maxVotes){
                 maxVotes = votesCount;
                 delete currentVote.winningProposals;
-                currentVote.winningProposals.push(currentVote.proposals[i]);
+                currentVote.winningProposals.push(i);
             } else if (votesCount == maxVotes && maxVotes != 0){
-                currentVote.winningProposals.push(currentVote.proposals[i]);
+                currentVote.winningProposals.push(i);
             }
         }
 
@@ -142,7 +141,7 @@ contract Voting is Ownable {
     */
     function resetVotingState() external onlyOwner {
         require(
-            currentVote.status == WorkflowStatus.VotesTallied ,
+            currentVote.status == WorkflowStatus.VotesTallied,
             InvalidWorkflowStatus(currentVote.status, WorkflowStatus.VotesTallied)
         );
 
@@ -154,6 +153,7 @@ contract Voting is Ownable {
         for (uint i = 0; i < currentVote.proposals.length; i++) {
             summary.proposals.push(currentVote.proposals[i]);
         }
+
 
         for (uint i = 0; i < currentVote.winningProposals.length; i++) {
             summary.winningProposals.push(currentVote.winningProposals[i]);
@@ -208,7 +208,7 @@ contract Voting is Ownable {
     * This function is to access the vote results
     * Only available to registered voters
     */
-    function getVoteResults() external view allowedVoter returns (Proposal[] memory winningProposals) {
+    function getVoteResults() external view allowedVoter returns (uint[] memory winningProposals) {
         require(
             currentVote.status == WorkflowStatus.VotesTallied,
             InvalidWorkflowStatus(currentVote.status, WorkflowStatus.VotesTallied)
@@ -216,7 +216,9 @@ contract Voting is Ownable {
         return currentVote.winningProposals;
     }
 
-
+    /**
+    * This function is to get past voting sessions
+    */
     function getPastVote(uint index) external view returns (VotingSummary memory) {
         require(index < pastVotes.length, InvalidPastVoteID());
         return pastVotes[index];
